@@ -26,6 +26,6 @@ class EstudianteServicioTest {
         // --- FASE DE ASERCIÓN (Assert) ---
         // Verificar que el objeto creado no sea nulo.
         // Esta línea no se llegará a ejecutar al principio, porque el código no compilará.
-        assertNotNull(EstudianteServicio, "La instancia de EstudianteServicio no debería ser nula.");
+        assertNotNull(estudianteServicio, "La instancia de EstudianteServicio no debería ser nula.");
     }
 }

@@ -12,13 +12,15 @@ public class Estudiante {
     private String nombre;
     private String email;
     private int edad;
+    private String curso;
 
     // Constructor con parámetros
-    public Estudiante(Long id, String nombre, String email, int edad) {
+    public Estudiante(Long id, String nombre, String email, int edad, String curso) {
         this.id = id;
         this.nombre = nombre;
         this.email = email;
         this.edad = edad;
+        this.curso = curso;
     }
 
     // Constructor sin ID (para creación)
@@ -61,6 +63,14 @@ public class Estudiante {
         this.edad = edad;
     }
 
+    public String getCurso() {
+        return curso;
+    }
+
+    public void setCurso(String curso) {
+        this.curso = curso;
+    }
+
     // Buena práctica: sobreescribir equals() y hashCode()
     // (para que dos objetos Estudiante se consideren iguales si tienen el mismo id)
     @Override
@@ -70,6 +80,7 @@ public class Estudiante {
                 ", nombre='" + nombre + '\'' +
                 ", email='" + email + '\'' +
                 ", edad=" + edad +
+                ", curso='" + curso + '\'' +
                 '}';
     }
 

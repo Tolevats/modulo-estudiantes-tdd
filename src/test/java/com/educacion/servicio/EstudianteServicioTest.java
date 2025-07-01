@@ -52,23 +52,18 @@ class EstudianteServicioTest {
         // --- Assert ---
         assertEquals(0, estudianteServicio.getTodosLosEstudiantes().size());
     }
-    // --- Nueva Prueba UPDATE (RED) ---
+    // --- Prueba UPDATE ---
     @Test
     @DisplayName("Debería actualizar los datos de un estudiante existente")
     void deberiaActualizarUnEstudianteExistente() {
         // --- Arrange ---
-        // 1. Crear y añadir el estudiante original
         Estudiante estudianteOriginal = new Estudiante(1L, "Ninfa Manríquez", "nmanriquez@mail.com", 24, "Testing Automation I");
         estudianteServicio.crearEstudiante(estudianteOriginal);
-        // 2. Crear un objeto con los datos actualizados (mismo ID pero distinto curso).
         Estudiante estudianteActualizado = new Estudiante(1L, "Ninfa Manríquez", "nmanriquez@mail.com", 24, "Testing Automation II");
         // --- Act ---
-        // 3. Llamar al método para actualizar (aún no existe).
         estudianteServicio.actualizarEstudiante(estudianteActualizado);
         // --- Assert ---
-        // 4. Para verificar, se necesita un método que devuelva un estudiante por su ID (tampoco existe).
         Optional<Estudiante> estudianteRecuperadoOpt = estudianteServicio.getEstudiantePorId(1L);
-        // 5. Verificar que el estudiante existe y que su curso ha sido actualizado.
         assertTrue(estudianteRecuperadoOpt.isPresent(), "El estudiante debería encontrarse en el servicio.");
         assertEquals("Testing Automation II", estudianteRecuperadoOpt.get().getCurso(), "El curso del estudiante debería haberse actualizado.");
         assertEquals(1, estudianteServicio.getTodosLosEstudiantes().size(), "El número de estudiantes no debería cambiar.");

@@ -24,10 +24,11 @@ public class Estudiante {
     }
 
     // Constructor sin ID (para creación)
-    public Estudiante(String nombre, String email, int edad) {
+    public Estudiante(String nombre, String email, int edad, String curso) {
         this.nombre = nombre;
         this.email = email;
         this.edad = edad;
+        this.curso = curso;
     }
 
     // Getters y Setters

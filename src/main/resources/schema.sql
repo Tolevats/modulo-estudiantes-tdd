@@ -28,8 +28,8 @@ SELECT 'Total de estudiantes registrados:' as descripcion, COUNT(*) as cantidad 
 SELECT * FROM estudiantes ORDER BY id;
 
 -- Consultas adicionales para testing
-SELECT 'Estudiantes mayores de 21:' as descripcion, COUNT(*) as cantidad
-FROM estudiantes WHERE edad > 21;
+SELECT 'Estudiantes mayores de 18:' as descripcion, COUNT(*) as cantidad
+FROM estudiantes WHERE edad >= 18;
 
 SELECT 'Emails únicos verificación:' as descripcion, COUNT(DISTINCT email) as cantidad
 FROM estudiantes;

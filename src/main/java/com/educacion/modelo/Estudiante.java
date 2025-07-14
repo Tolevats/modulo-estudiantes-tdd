@@ -1,6 +1,7 @@
 package com.educacion.modelo;
 
 import java.util.Objects;
+import java.time.LocalDateTime;
 
 /**
  * Clase Modelo que representa a un Estudiante.
@@ -13,22 +14,40 @@ public class Estudiante {
     private String email;
     private int edad;
     private String curso;
+    private LocalDateTime fechaRegistro;
+    private boolean activo;
 
-    // Constructor con parámetros
+    // Constructor con ID
     public Estudiante(Long id, String nombre, String email, int edad, String curso) {
         this.id = id;
         this.nombre = nombre;
         this.email = email;
         this.edad = edad;
         this.curso = curso;
+        this.fechaRegistro = LocalDateTime.now();
+        this.activo = true;
     }
 
-    // Constructor sin ID (para creación)
+    // Constructor sin ID (para nuevos estudiantes)
     public Estudiante(String nombre, String email, int edad, String curso) {
         this.nombre = nombre;
         this.email = email;
         this.edad = edad;
         this.curso = curso;
+        this.fechaRegistro = LocalDateTime.now();
+        this.activo = true;
+    }
+
+    // Constructor completo
+    public Estudiante(Long id, String nombre, String email, int edad, String curso,
+                      LocalDateTime fechaRegistro, boolean activo) {
+        this.id = id;
+        this.nombre = nombre;
+        this.email = email;
+        this.edad = edad;
+        this.curso = curso;
+        this.fechaRegistro = fechaRegistro;
+        this.activo = activo;
     }
 
     // Getters y Setters
@@ -72,6 +91,22 @@ public class Estudiante {
         this.curso = curso;
     }
 
+    public LocalDateTime getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(LocalDateTime fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+
     // Buena práctica: sobreescribir equals() y hashCode()
     // (para que dos objetos Estudiante se consideren iguales si tienen el mismo id)
     @Override
@@ -82,6 +117,8 @@ public class Estudiante {
                 ", email='" + email + '\'' +
                 ", edad=" + edad +
                 ", curso='" + curso + '\'' +
+                ", fechaRegistro=" + fechaRegistro +
+                ", activo=" + activo +
                 '}';
     }
 
@@ -89,22 +126,12 @@ public class Estudiante {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Estudiante that = (Estudiante) o;
-        /*return edad == that.edad &&
-                id != null ? id.equals(that.id) : that.id == null &&
-                nombre != null ? nombre.equals(that.nombre) : that.nombre == null &&
-                email != null ? email.equals(that.email) : that.email == null;*/
-        return Objects.equals(id, that.id);
+        return Objects.equals(id, that.id) && Objects.equals(email, that.email);
     }
 
     @Override
     public int hashCode() {
-        /*int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (nombre != null ? nombre.hashCode() : 0);
-        result = 31 * result + (email != null ? email.hashCode() : 0);
-        result = 31 * result + edad;
-        return result;*/
         return Objects.hash(id);
     }
 }

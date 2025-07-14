@@ -9,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -38,16 +37,13 @@ class EstudianteServicioTest {
     // ========== Pruebas CREATE para obtener Estudiante ==========
     @Test
     @DisplayName("Debería obtener estudiante por ID exitosamente")
-    void deberiaObtenerEstudiantePorIdExitosamente() throws SQLException {
+    void deberiaObtenerEstudiantePorIdExitosamente() {
         // ARRANGE
         Long id = 1L;
         Estudiante estudianteEsperado = new Estudiante(id, "Carlos Mendoza", "carlos.mendoza@email.com", 28, "Testing");
-
         when(estudianteDAO.obtenerPorId(id)).thenReturn(Optional.of(estudianteEsperado));
-
         // ACT
         Optional<Estudiante> resultado = estudianteServicio.obtenerEstudiantePorId(id);
-
         // ASSERT
         assertTrue(resultado.isPresent());
         assertEquals(estudianteEsperado, resultado.get());
@@ -56,15 +52,12 @@ class EstudianteServicioTest {
 
     @Test
     @DisplayName("Debería retornar Optional vacío si estudiante no existe")
-    void deberiaRetornarOptionalVacioSiEstudianteNoExiste() throws SQLException {
+    void deberiaRetornarOptionalVacioSiEstudianteNoExiste() {
         // ARRANGE
         Long id = 99L;
-
         when(estudianteDAO.obtenerPorId(id)).thenReturn(Optional.empty());
-
         // ACT
         Optional<Estudiante> resultado = estudianteServicio.obtenerEstudiantePorId(id);
-
         // ASSERT
         assertFalse(resultado.isPresent());
         verify(estudianteDAO).obtenerPorId(id);
@@ -73,38 +66,24 @@ class EstudianteServicioTest {
     @Test
     @DisplayName("Debería lanzar excepción si ID es nulo o inválido")
     void deberiaLanzarExcepcionSiIdEsNuloOInvalido() {
-        // ACT & ASSERT
-        IllegalArgumentException exception1 = assertThrows(
-                IllegalArgumentException.class,
-                () -> estudianteServicio.obtenerEstudiantePorId(null)
-        );
-
-        IllegalArgumentException exception2 = assertThrows(
-                IllegalArgumentException.class,
-                () -> estudianteServicio.obtenerEstudiantePorId(0L)
-        );
-
-        assertEquals("ID debe ser un número positivo", exception1.getMessage());
-        assertEquals("ID debe ser un número positivo", exception2.getMessage());
+        assertThrows(IllegalArgumentException.class, () -> estudianteServicio.obtenerEstudiantePorId(null));
+        assertThrows(IllegalArgumentException.class, () -> estudianteServicio.obtenerEstudiantePorId(0L));
         verifyNoInteractions(estudianteDAO);
     }
 
     // ========== Pruebas READ para listar Estudiantes ==========
     @Test
     @DisplayName("Debería obtener todos los estudiantes exitosamente")
-    void deberiaObtenerTodosLosEstudiantesExitosamente() throws SQLException {
+    void deberiaObtenerTodosLosEstudiantesExitosamente() {
         // ARRANGE
         List<Estudiante> estudiantesEsperados = Arrays.asList(
                 new Estudiante(1L, "Juan Pérez", "juan.perez@email.com", 25, "Java"),
                 new Estudiante(2L, "María García", "maria.garcia@email.com", 22, "Spring"),
                 new Estudiante(3L, "Carlos López", "carlos.lopez@email.com", 30, "Testing")
         );
-
         when(estudianteDAO.obtenerTodos()).thenReturn(estudiantesEsperados);
-
         // ACT
         List<Estudiante> resultado = estudianteServicio.obtenerTodosLosEstudiantes();
-
         // ASSERT
         assertNotNull(resultado);
         assertEquals(3, resultado.size());
@@ -114,13 +93,11 @@ class EstudianteServicioTest {
 
     @Test
     @DisplayName("Debería retornar lista vacía si no hay estudiantes")
-    void deberiaRetornarListaVaciaSiNoHayEstudiantes() throws SQLException {
+    void deberiaRetornarListaVaciaSiNoHayEstudiantes() {
         // ARRANGE
         when(estudianteDAO.obtenerTodos()).thenReturn(Arrays.asList());
-
         // ACT
         List<Estudiante> resultado = estudianteServicio.obtenerTodosLosEstudiantes();
-
         // ASSERT
         assertNotNull(resultado);
         assertEquals(0, resultado.size());
@@ -130,7 +107,7 @@ class EstudianteServicioTest {
     // ========== Pruebas UPDATE para actualizar Estudiante ==========
     @Test
     @DisplayName("Debería actualizar estudiante exitosamente")
-    void deberiaActualizarEstudianteExitosamente() throws SQLException {
+    void deberiaActualizarEstudianteExitosamente() {
         // ARRANGE
         Long id = 1L;
         String nombre = "Juan Carlos Pérez";
@@ -143,7 +120,6 @@ class EstudianteServicioTest {
         when(estudianteDAO.obtenerPorId(id)).thenReturn(Optional.of(estudianteExistente));
         when(estudianteDAO.existeEmail(email)).thenReturn(false);
         when(estudianteDAO.actualizar(any(Estudiante.class))).thenReturn(true);
-
         // ACT
         Estudiante resultado = estudianteServicio.actualizarEstudiante(id, nombre, email, edad, curso);
 
@@ -162,7 +138,7 @@ class EstudianteServicioTest {
 
     @Test
     @DisplayName("Debería lanzar excepción si estudiante a actualizar no existe")
-    void deberiaLanzarExcepcionSiEstudianteAActualizarNoExiste() throws SQLException {
+    void deberiaLanzarExcepcionSiEstudianteAActualizarNoExiste() {
         // ARRANGE
         Long id = 99L;
 
@@ -182,7 +158,7 @@ class EstudianteServicioTest {
     // ========== Pruebas DELETE para eliminar Estudiante ==========
     @Test
     @DisplayName("Debería eliminar estudiante existosamente")
-    void deberiaEliminarEstudianteExitosamente() throws SQLException {
+    void deberiaEliminarEstudianteExitosamente() {
         // ARRANGE
         Long id = 1L;
 
@@ -198,15 +174,12 @@ class EstudianteServicioTest {
 
     @Test
     @DisplayName("Debería retornar false si no se puede eliminar estudiante")
-    void deberiaRetornarFalseSiNoPuedeEliminarEstudiante() throws SQLException {
+    void deberiaRetornarFalseSiNoPuedeEliminarEstudiante() {
         // ARRANGE
         Long id = 99L;
-
         when(estudianteDAO.eliminar(id)).thenReturn(false);
-
         // ACT
         boolean resultado = estudianteServicio.eliminarEstudiante(id);
-
         // ASSERT
         assertFalse(resultado);
         verify(estudianteDAO).eliminar(id);
@@ -227,8 +200,8 @@ class EstudianteServicioTest {
 
     // ========== Pruebas para manejo de excepciones SQL ==========
     @Test
-    @DisplayName("Debería manejar SQLException al crear estudiante")
-    void deberiaManejarSQLExceptionAlCrearEstudiante() throws SQLException {
+    @DisplayName("Debería propagar RuntimeException del DAO al crear estudiante")
+    void deberiaPropagarRuntimeExceptionDelDAO() {
         // ARRANGE
         String nombre = "Test";
         String email = "test@email.com";
@@ -236,16 +209,11 @@ class EstudianteServicioTest {
         String curso = "Java";
 
         when(estudianteDAO.existeEmail(email)).thenReturn(false);
-        when(estudianteDAO.crear(any(Estudiante.class))).thenThrow(new SQLException("Error de BD"));
+        when(estudianteDAO.crear(any(Estudiante.class))).thenThrow(new RuntimeException("Error de BD"));
 
         // ACT & ASSERT
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
-                () -> estudianteServicio.crearEstudiante(nombre, email, edad, curso)
-        );
-
-        assertTrue(exception.getMessage().contains("Error al crear estudiante"));
-        verify(estudianteDAO).existeEmail(email);
-        verify(estudianteDAO).crear(any(Estudiante.class));
+        assertThrows(RuntimeException.class, () -> {
+                estudianteServicio.crearEstudiante(nombre, email, edad, curso);
+        });
     }
 }

@@ -127,7 +127,9 @@ public class Estudiante {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Estudiante that = (Estudiante) o;
-        return Objects.equals(id, that.id) && Objects.equals(email, that.email);
+        // Si ambos IDs son nulos, se consideran diferentes. Si uno es nulo y el otro no, también.
+        // Solo son iguales si ambos IDs son no nulos y tienen el mismo valor.
+        return id != null && Objects.equals(id, that.id);
     }
 
     @Override

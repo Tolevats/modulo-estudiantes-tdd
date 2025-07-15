@@ -41,7 +41,7 @@ Este proyecto es una aplicación Java que gestiona un CRUD (Crear, Leer, Actuali
 3. **Generar y Ver el Reporte de Cobertura**  
    El comando anterior ya genera el reporte. Para visualizarlo:
     * Abre el siguiente archivo en tu navegador web:  
-      `\[RUTA-DEL-PROYECTO\]/target/site/jacoco/index.html
+      `.../target/site/jacoco/index.html`
     * Podrás explorar interactivamente la cobertura de cada clase y método.
 
 4. **Base de Datos (SQLonline)**  

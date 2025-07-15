@@ -106,4 +106,27 @@ class EstudianteDAOTest {
         assertTrue(actualizado.isPresent());
         assertEquals("Java Avanzado", actualizado.get().getCurso());
     }
+
+    @Test
+    @DisplayName("Debería retornar true si el email existe")
+    void deberiaRetornarTrueSiEmailExiste() {
+        // Arrange
+        String emailExistente = "test.existe@email.com";
+        estudianteDAO.crear(new Estudiante("Usuario Test", emailExistente, 30, "Cobertura"));
+        // Act
+        boolean resultado = estudianteDAO.existeEmail(emailExistente);
+        // Assert
+        assertTrue(resultado);
+    }
+
+    @Test
+    @DisplayName("Debería retornar false si el email no existe")
+    void deberiaRetornarFalseSiEmailNoExiste() {
+        // Arrange
+        String emailInexistente = "no.existe@email.com";
+        // Act
+        boolean resultado = estudianteDAO.existeEmail(emailInexistente);
+        // Assert
+        assertFalse(resultado);
+    }
 }

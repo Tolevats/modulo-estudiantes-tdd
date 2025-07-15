@@ -16,10 +16,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Pruebas unitarias para EstudianteServicio usando Mockito
- * Lección 4 - TDD: Pruebas Unitarias y Mocking
- */
+
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Pruebas del Servicio Estudiante con Mocking")
 class EstudianteServicioTest {
@@ -216,4 +213,171 @@ class EstudianteServicioTest {
                 estudianteServicio.crearEstudiante(nombre, email, edad, curso);
         });
     }
-}
+
+    /**
+    * Pruebas adicionales para alcanzar 80% de cobertura en EstudianteServicio
+    * Casos edge y branches no cubiertas
+    */
+    @Test
+    @DisplayName("Debería fallar al crear estudiante con nombre de 1 carácter")
+    public void deberiaFallarConNombreUnCaracter() {
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            estudianteServicio.crearEstudiante("A", "test@test.com", 20, "Java");
+        });
+
+        assertEquals("El nombre es obligatorio y debe tener al menos 2 caracteres", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Debería fallar al crear estudiante con nombre solo espacios")
+    public void deberiaFallarConNombreSoloEspacios() {
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            estudianteServicio.crearEstudiante("   ", "test@test.com", 20, "Java");
+        });
+
+        assertEquals("El nombre es obligatorio y debe tener al menos 2 caracteres", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Debería fallar al crear estudiante con edad límite inferior")
+    public void deberiaFallarConEdadMenorA18() {
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            estudianteServicio.crearEstudiante("Juan Pérez", "juan@test.com", 17, "Java");
+        });
+
+        assertEquals("La edad debe estar entre 18 y 100 años", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Debería fallar al crear estudiante con edad límite superior")
+    public void deberiaFallarConEdadMayorA100() {
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            estudianteServicio.crearEstudiante("Juan Pérez", "juan@test.com", 101, "Java");
+        });
+
+        assertEquals("La edad debe estar entre 18 y 100 años", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Debería fallar al crear estudiante con curso solo espacios")
+    public void deberiaFallarConCursoSoloEspacios() {
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            estudianteServicio.crearEstudiante("Juan Pérez", "juan@test.com", 20, "   ");
+        });
+
+        assertEquals("El curso es obligatorio", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Debería fallar al actualizar con email existente de otro estudiante")
+    public void deberiaFallarAlActualizarConEmailExistente() {
+        // Arrange
+        Long id = 1L;
+        Estudiante estudianteExistente = new Estudiante(id, "Juan Original", "juan@test.com", 20, "Java");
+
+        when(estudianteDAO.obtenerPorId(id)).thenReturn(Optional.of(estudianteExistente));
+        when(estudianteDAO.existeEmail("nuevo@test.com")).thenReturn(true);
+
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            estudianteServicio.actualizarEstudiante(id, "Juan Actualizado", "nuevo@test.com", 25, "Python");
+        });
+
+        assertEquals("Ya existe un estudiante con el email: nuevo@test.com", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Debería actualizar correctamente cuando se mantiene el mismo email")
+    public void deberiaActualizarConMismoEmail() {
+        // Arrange
+        Long id = 1L;
+        Estudiante estudianteExistente = new Estudiante(id, "Juan Original", "juan@test.com", 20, "Java");
+
+        when(estudianteDAO.obtenerPorId(id)).thenReturn(Optional.of(estudianteExistente));
+        when(estudianteDAO.actualizar(any(Estudiante.class))).thenReturn(true);
+
+        // Act
+        Estudiante resultado = estudianteServicio.actualizarEstudiante(id, "Juan Actualizado", "juan@test.com", 25, "Python");
+
+        // Assert
+        assertNotNull(resultado);
+        assertEquals("Juan Actualizado", resultado.getNombre());
+        assertEquals("juan@test.com", resultado.getEmail());
+        assertEquals(25, resultado.getEdad());
+        assertEquals("Python", resultado.getCurso());
+
+        verify(estudianteDAO).actualizar(estudianteExistente);
+        verify(estudianteDAO, never()).existeEmail(anyString());
+    }
+
+    @Test
+    @DisplayName("Debería fallar cuando actualizar retorna false")
+    public void deberiaFallarCuandoActualizarRetornaFalse() {
+        // Arrange
+        Long id = 1L;
+        Estudiante estudianteExistente = new Estudiante(id, "Juan Original", "juan@test.com", 20, "Java");
+
+        when(estudianteDAO.obtenerPorId(id)).thenReturn(Optional.of(estudianteExistente));
+        when(estudianteDAO.actualizar(any(Estudiante.class))).thenReturn(false);
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            estudianteServicio.actualizarEstudiante(id, "Juan Actualizado", "juan@test.com", 25, "Python");
+        });
+        assertEquals("No se pudo actualizar el estudiante con ID: 1", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Debería validar emails con formatos límite válidos")
+    public void deberiaValidarEmailsConFormatosLimite() {
+        // Arrange
+        when(estudianteDAO.existeEmail(anyString())).thenReturn(false);
+        when(estudianteDAO.crear(any(Estudiante.class))).thenReturn(new Estudiante(1L, "Test", "test@domain.co", 20, "Test"));
+        // Act & Assert - Email mínimo válido
+        assertDoesNotThrow(() -> {
+            estudianteServicio.crearEstudiante("Test User", "a@b.co", 20, "Test");
+        });
+        // Act & Assert - Email con múltiples puntos
+        assertDoesNotThrow(() -> {
+            estudianteServicio.crearEstudiante("Test User", "test.user@domain.co.uk", 20, "Test");
+        });
+    }
+
+    @Test
+    @DisplayName("Debería fallar con formato de email inválido - casos específicos")
+    public void deberiaFallarConEmailInvalido() {
+        // Email null
+        assertThrows(IllegalArgumentException.class, () -> {
+            estudianteServicio.crearEstudiante("Test User", null, 20, "Test");
+        });
+
+        // Email vacío
+        assertThrows(IllegalArgumentException.class, () -> {
+            estudianteServicio.crearEstudiante("Test User", "", 20, "Test");
+        });
+
+        // Email solo espacios
+        assertThrows(IllegalArgumentException.class, () -> {
+            estudianteServicio.crearEstudiante("Test User", "   ", 20, "Test");
+        });
+    }
+
+    @Test
+    @DisplayName("Debería crear estudiante con edad límite válida (18 y 100)")
+    public void deberiaCrearEstudianteConEdadLimite() {
+        // Arrange
+        when(estudianteDAO.existeEmail(anyString())).thenReturn(false);
+        when(estudianteDAO.crear(any(Estudiante.class))).thenReturn(new Estudiante(1L, "Test", "test@test.com", 18, "Test"));
+        // Act & Assert - Edad mínima válida (18)
+        assertDoesNotThrow(() -> {
+            estudianteServicio.crearEstudiante("Test User 18", "test18@test.com", 18, "Test");
+        });
+        // Act & Assert - Edad máxima válida (100)
+        assertDoesNotThrow(() -> {
+            estudianteServicio.crearEstudiante("Test User 100", "test100@test.com", 100, "Test");
+        });
+    }}

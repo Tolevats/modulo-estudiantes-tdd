@@ -31,7 +31,7 @@ Este proyecto es una aplicación Java que gestiona un CRUD (Crear, Leer, Actuali
 ### **Pasos**
 1. **Clonar el Repositorio**  
    `git clone [https://github.com/Tolevats/modulo-estudiantes-tdd.git]`
-   `cd TDD-Proyecto-Basico`
+   `cd proyecto-tdd`
 
 2. **Compilar, Probar y Verificar**  
    Este es el comando principal. Limpia el proyecto, compila todo el código, ejecuta todas las pruebas (unitarias y de integración) y finalmente verifica que la cobertura de código cumple con el mínimo del 80%.  

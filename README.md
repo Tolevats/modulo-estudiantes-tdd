@@ -30,7 +30,7 @@ Este proyecto es una aplicación Java que gestiona un CRUD (Crear, Leer, Actuali
 
 ### **Pasos**
 1. **Clonar el Repositorio**  
-   `git clone \[URL-DE-TU-REPOSITORIO-EN-GITHUB\]`
+   `git clone [https://github.com/Tolevats/modulo-estudiantes-tdd.git]`
    `cd TDD-Proyecto-Basico`
 
 2. **Compilar, Probar y Verificar**  
